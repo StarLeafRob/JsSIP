@@ -1,9 +1,5 @@
 /*
-<<<<<<< HEAD
- * JsSIP v1.0.1-sl
-=======
- * JsSIP v2.0.1
->>>>>>> upstream/master
+ * JsSIP v2.0.1-sl
  * the Javascript SIP library
  * Copyright: 2012-2016 José Luis Millán <jmillan@aliax.net> (https://github.com/jmillan)
  * Homepage: http://jssip.net
@@ -166,11 +162,7 @@ var C = {
 
 module.exports = C;
 
-<<<<<<< HEAD
 },{"../package.json":51}],2:[function(require,module,exports){
-=======
-},{"../package.json":47}],2:[function(require,module,exports){
->>>>>>> upstream/master
 module.exports = Dialog;
 
 
@@ -13456,12 +13448,8 @@ var UA = require('./UA');
 var URI = require('./URI');
 var NameAddrHeader = require('./NameAddrHeader');
 var Grammar = require('./Grammar');
-<<<<<<< HEAD
-var SdpInterop = require('sdp-interop-sl');
-=======
-var Socket = require('./Socket');
 var WebSocketInterface = require('./WebSocketInterface');
->>>>>>> upstream/master
+var SdpInterop = require('sdp-interop-sl');
 
 
 /**
@@ -13474,7 +13462,6 @@ var JsSIP = module.exports = {
   UA: UA,
   URI: URI,
   NameAddrHeader: NameAddrHeader,
-  Socket: Socket,
   WebSocketInterface: WebSocketInterface,
   Grammar: Grammar,
   SdpInterop: SdpInterop,
@@ -13493,11 +13480,7 @@ Object.defineProperties(JsSIP, {
   }
 });
 
-<<<<<<< HEAD
-},{"../package.json":51,"./Constants":1,"./Exceptions":5,"./Grammar":6,"./NameAddrHeader":9,"./UA":23,"./URI":24,"./Utils":25,"debug":33,"sdp-interop-sl":37}],8:[function(require,module,exports){
-=======
-},{"../package.json":47,"./Constants":1,"./Exceptions":5,"./Grammar":6,"./NameAddrHeader":9,"./Socket":19,"./UA":23,"./URI":24,"./Utils":25,"./WebSocketInterface":26,"debug":33,"rtcninja":38}],8:[function(require,module,exports){
->>>>>>> upstream/master
+},{"../package.json":51,"./Constants":1,"./Exceptions":5,"./Grammar":6,"./NameAddrHeader":9,"./UA":23,"./URI":24,"./Utils":25,"./WebSocketInterface":26,"debug":33,"sdp-interop-sl":37}],8:[function(require,module,exports){
 module.exports = Message;
 
 
@@ -20863,11 +20846,7 @@ function onTransportData(data) {
  }
 }
 
-<<<<<<< HEAD
 },{"./Constants":1,"./Exceptions":5,"./Grammar":6,"./Message":8,"./Parser":10,"./RTCSession":11,"./Registrator":16,"./SIPMessage":18,"./Socket":19,"./Transactions":21,"./Transport":22,"./URI":24,"./Utils":25,"./WebSocketInterface":26,"./sanityCheck":27,"debug":33,"events":28,"util":32}],24:[function(require,module,exports){
-=======
-},{"./Constants":1,"./Exceptions":5,"./Grammar":6,"./Message":8,"./Parser":10,"./RTCSession":11,"./Registrator":16,"./SIPMessage":18,"./Socket":19,"./Transactions":21,"./Transport":22,"./URI":24,"./Utils":25,"./WebSocketInterface":26,"./sanityCheck":27,"debug":33,"events":28,"rtcninja":38,"util":32}],24:[function(require,module,exports){
->>>>>>> upstream/master
 module.exports = URI;
 
 
@@ -23392,285 +23371,9 @@ module.exports = function arrayEquals(array) {
     if (!array)
         return false;
 
-<<<<<<< HEAD
     // compare lengths - can save a lot of time
     if (this.length != array.length)
         return false;
-=======
-// Dirty trick to get this library working in a Node-webkit env with browserified libs
-virtGlobal = global.window || global;
-// Don't fail in Node
-virtNavigator = virtGlobal.navigator || {};
-
-
-// Constructor.
-
-function Adapter(options) {
-	// Chrome desktop, Chrome Android, Opera desktop, Opera Android, Android native browser
-	// or generic Webkit browser.
-	if (
-		(isDesktop && browser.chrome && browserVersion >= 32) ||
-		(browser.android && browser.chrome && browserVersion >= 39) ||
-		(isDesktop && browser.opera && browserVersion >= 27) ||
-		(browser.android && browser.opera && browserVersion >= 24) ||
-		(browser.android && browser.webkit && !browser.chrome && browserVersion >= 37) ||
-		(virtNavigator.webkitGetUserMedia && virtGlobal.webkitRTCPeerConnection)
-	) {
-		hasWebRTC = true;
-		getUserMedia = virtNavigator.webkitGetUserMedia.bind(virtNavigator);
-		RTCPeerConnection = virtGlobal.webkitRTCPeerConnection;
-		RTCSessionDescription = virtGlobal.RTCSessionDescription;
-		RTCIceCandidate = virtGlobal.RTCIceCandidate;
-		MediaStreamTrack = virtGlobal.MediaStreamTrack;
-		if (MediaStreamTrack && MediaStreamTrack.getSources) {
-			getMediaDevices = MediaStreamTrack.getSources.bind(MediaStreamTrack);
-		} else if (virtNavigator.getMediaDevices) {
-			getMediaDevices = virtNavigator.getMediaDevices.bind(virtNavigator);
-		}
-		attachMediaStream = function (element, stream) {
-			element.src = URL.createObjectURL(stream);
-			return element;
-		};
-		canRenegotiate = true;
-		oldSpecRTCOfferOptions = false;
-	// Firefox desktop, Firefox Android.
-	} else if (
-		(isDesktop && browser.firefox && browserVersion >= 22) ||
-		(browser.android && browser.firefox && browserVersion >= 33) ||
-		(virtNavigator.mozGetUserMedia && virtGlobal.mozRTCPeerConnection)
-	) {
-		hasWebRTC = true;
-		getUserMedia = virtNavigator.mozGetUserMedia.bind(virtNavigator);
-		RTCPeerConnection = virtGlobal.mozRTCPeerConnection;
-		RTCSessionDescription = virtGlobal.mozRTCSessionDescription;
-		RTCIceCandidate = virtGlobal.mozRTCIceCandidate;
-		MediaStreamTrack = virtGlobal.MediaStreamTrack;
-		attachMediaStream = function (element, stream) {
-			element.src = URL.createObjectURL(stream);
-			return element;
-		};
-		canRenegotiate = false;
-		oldSpecRTCOfferOptions = false;
-		// WebRTC plugin required. For example IE or Safari with the Temasys plugin.
-	} else if (
-		options.plugin &&
-		typeof options.plugin.isRequired === 'function' &&
-		options.plugin.isRequired() &&
-		typeof options.plugin.isInstalled === 'function' &&
-		options.plugin.isInstalled()
-	) {
-		var pluginiface = options.plugin.interface;
-
-		hasWebRTC = true;
-		getUserMedia = pluginiface.getUserMedia;
-		RTCPeerConnection = pluginiface.RTCPeerConnection;
-		RTCSessionDescription = pluginiface.RTCSessionDescription;
-		RTCIceCandidate = pluginiface.RTCIceCandidate;
-		MediaStreamTrack = pluginiface.MediaStreamTrack;
-		if (MediaStreamTrack && MediaStreamTrack.getSources) {
-			getMediaDevices = MediaStreamTrack.getSources.bind(MediaStreamTrack);
-		} else if (virtNavigator.getMediaDevices) {
-			getMediaDevices = virtNavigator.getMediaDevices.bind(virtNavigator);
-		}
-		attachMediaStream = pluginiface.attachMediaStream;
-		canRenegotiate = pluginiface.canRenegotiate;
-		oldSpecRTCOfferOptions = true;
-	// Best effort (may be adater.js is loaded).
-	} else if (virtNavigator.getUserMedia && virtGlobal.RTCPeerConnection) {
-		hasWebRTC = true;
-		getUserMedia = virtNavigator.getUserMedia.bind(virtNavigator);
-		RTCPeerConnection = virtGlobal.RTCPeerConnection;
-		RTCSessionDescription = virtGlobal.RTCSessionDescription;
-		RTCIceCandidate = virtGlobal.RTCIceCandidate;
-		MediaStreamTrack = virtGlobal.MediaStreamTrack;
-		if (MediaStreamTrack && MediaStreamTrack.getSources) {
-			getMediaDevices = MediaStreamTrack.getSources.bind(MediaStreamTrack);
-		} else if (virtNavigator.getMediaDevices) {
-			getMediaDevices = virtNavigator.getMediaDevices.bind(virtNavigator);
-		}
-		attachMediaStream = virtGlobal.attachMediaStream || function (element, stream) {
-			element.src = URL.createObjectURL(stream);
-			return element;
-		};
-		canRenegotiate = true;
-		oldSpecRTCOfferOptions = false;
-	}
-
-
-	function throwNonSupported(item) {
-		return function () {
-			throw new Error('rtcninja: WebRTC not supported, missing ' + item +
-			' [browser: ' + browser.name + ' ' + browser.version + ']');
-		};
-	}
-
-
-	// Public API.
-
-	// Expose a WebRTC checker.
-	Adapter.hasWebRTC = function () {
-		return hasWebRTC;
-	};
-
-	// Expose getUserMedia.
-	if (getUserMedia) {
-		Adapter.getUserMedia = function (constraints, successCallback, errorCallback) {
-			debug('getUserMedia() | constraints: %o', constraints);
-
-			try {
-				getUserMedia(constraints,
-					function (stream) {
-						debug('getUserMedia() | success');
-						if (successCallback) {
-							successCallback(stream);
-						}
-					},
-					function (error) {
-						debug('getUserMedia() | error:', error);
-						if (errorCallback) {
-							errorCallback(error);
-						}
-					}
-				);
-			}
-			catch (error) {
-				debugerror('getUserMedia() | error:', error);
-				if (errorCallback) {
-					errorCallback(error);
-				}
-			}
-		};
-	} else {
-		Adapter.getUserMedia = function (constraints, successCallback, errorCallback) {
-			debugerror('getUserMedia() | WebRTC not supported');
-			if (errorCallback) {
-				errorCallback(new Error('rtcninja: WebRTC not supported, missing ' +
-				'getUserMedia [browser: ' + browser.name + ' ' + browser.version + ']'));
-			} else {
-				throwNonSupported('getUserMedia');
-			}
-		};
-	}
-
-	// Expose RTCPeerConnection.
-	Adapter.RTCPeerConnection = RTCPeerConnection || throwNonSupported('RTCPeerConnection');
-
-	// Expose RTCSessionDescription.
-	Adapter.RTCSessionDescription = RTCSessionDescription || throwNonSupported('RTCSessionDescription');
-
-	// Expose RTCIceCandidate.
-	Adapter.RTCIceCandidate = RTCIceCandidate || throwNonSupported('RTCIceCandidate');
-
-	// Expose MediaStreamTrack.
-	Adapter.MediaStreamTrack = MediaStreamTrack || throwNonSupported('MediaStreamTrack');
-
-	// Expose getMediaDevices.
-	Adapter.getMediaDevices = getMediaDevices;
-
-	// Expose MediaStreamTrack.
-	Adapter.attachMediaStream = attachMediaStream || throwNonSupported('attachMediaStream');
-
-	// Expose canRenegotiate attribute.
-	Adapter.canRenegotiate = canRenegotiate;
-
-	// Expose closeMediaStream.
-	Adapter.closeMediaStream = function (stream) {
-		if (!stream) {
-			return;
-		}
-
-		// Latest spec states that MediaStream has no stop() method and instead must
-		// call stop() on every MediaStreamTrack.
-		try {
-			debug('closeMediaStream() | calling stop() on all the MediaStreamTrack');
-
-			var tracks, i, len;
-
-			if (stream.getTracks) {
-				tracks = stream.getTracks();
-				for (i = 0, len = tracks.length; i < len; i += 1) {
-					tracks[i].stop();
-				}
-			} else {
-				tracks = stream.getAudioTracks();
-				for (i = 0, len = tracks.length; i < len; i += 1) {
-					tracks[i].stop();
-				}
-				tracks = stream.getVideoTracks();
-				for (i = 0, len = tracks.length; i < len; i += 1) {
-					tracks[i].stop();
-				}
-			}
-		} catch (error) {
-			// Deprecated by the spec, but still in use.
-			// NOTE: In Temasys IE plugin stream.stop is a callable 'object'.
-			if (typeof stream.stop === 'function' || typeof stream.stop === 'object') {
-				debug('closeMediaStream() | calling stop() on the MediaStream');
-
-				stream.stop();
-			}
-		}
-	};
-
-	// Expose fixPeerConnectionConfig.
-	Adapter.fixPeerConnectionConfig = function (pcConfig) {
-		var i, len, iceServer, hasUrls, hasUrl;
-
-		if (!Array.isArray(pcConfig.iceServers)) {
-			pcConfig.iceServers = [];
-		}
-
-		for (i = 0, len = pcConfig.iceServers.length; i < len; i += 1) {
-			iceServer = pcConfig.iceServers[i];
-			hasUrls = iceServer.hasOwnProperty('urls');
-			hasUrl = iceServer.hasOwnProperty('url');
-
-			if (typeof iceServer === 'object') {
-				// Has .urls but not .url, so add .url with a single string value.
-				if (hasUrls && !hasUrl) {
-					iceServer.url = (Array.isArray(iceServer.urls) ? iceServer.urls[0] : iceServer.urls);
-				// Has .url but not .urls, so add .urls with same value.
-				} else if (!hasUrls && hasUrl) {
-					iceServer.urls = (Array.isArray(iceServer.url) ? iceServer.url.slice() : iceServer.url);
-				}
-
-				// Ensure .url is a single string.
-				if (hasUrl && Array.isArray(iceServer.url)) {
-					iceServer.url = iceServer.url[0];
-				}
-			}
-		}
-	};
-
-	// Expose fixRTCOfferOptions.
-	Adapter.fixRTCOfferOptions = function (options) {
-		options = options || {};
-
-		// New spec.
-		if (!oldSpecRTCOfferOptions) {
-			if (options.mandatory && options.mandatory.hasOwnProperty('OfferToReceiveAudio')) {
-				options.offerToReceiveAudio = options.mandatory.OfferToReceiveAudio ? 1 : 0;
-			}
-			if (options.mandatory && options.mandatory.hasOwnProperty('OfferToReceiveVideo')) {
-				options.offerToReceiveVideo = options.mandatory.OfferToReceiveVideo ? 1 : 0;
-			}
-			delete options.mandatory;
-		// Old spec.
-		} else {
-			if (options.hasOwnProperty('offerToReceiveAudio')) {
-				options.mandatory = options.mandatory || {};
-				options.mandatory.OfferToReceiveAudio = options.offerToReceiveAudio ? true : false;
-			}
-			if (options.hasOwnProperty('offerToReceiveVideo')) {
-				options.mandatory = options.mandatory || {};
-				options.mandatory.OfferToReceiveVideo = options.offerToReceiveVideo ? true : false;
-			}
-		}
-	};
-
-	return Adapter;
-}
->>>>>>> upstream/master
 
     for (var i = 0, l = this.length; i < l; i++) {
         // Check if we have nested arrays
@@ -23722,11 +23425,6 @@ exports.InteropChrome = require('./interop_on_chrome');
 
 
 
-<<<<<<< HEAD
-=======
-function RTCPeerConnection(pcConfig, pcConstraints) {
-	debug('new | [pcConfig:%o, pcConstraints:%o]', pcConfig, pcConstraints);
->>>>>>> upstream/master
 
 var Interop = function () {
     var cache = {};
@@ -24625,17 +24323,8 @@ module.exports = function (desc) {
             // In Plan B the msid is an SSRC attribute.
             delete uLine.msid;
 
-<<<<<<< HEAD
             // Used to build the group:BUNDLE value after this loop.
             types.push(uLine.type);
-=======
-},{"../package.json":42}],40:[function(require,module,exports){
-/*!
- * Bowser - a browser detector
- * https://github.com/ded/bowser
- * MIT License | (c) Dustin Diaz 2015
- */
->>>>>>> upstream/master
 
             // Add the channel to the new media array.
             session.media.push(uLine);
@@ -24668,7 +24357,6 @@ module.exports = function (desc) {
  * Copyright(c) Starleaf Ltd. 2016.
  */
 
-<<<<<<< HEAD
 
 "use strict";
 
@@ -24691,42 +24379,6 @@ var getRandomSrrc = function(usedNumbers) {
         } else {
             number = 0;
         }
-=======
-    var iosdevice = getFirstMatch(/(ipod|iphone|ipad)/i).toLowerCase()
-      , likeAndroid = /like android/i.test(ua)
-      , android = !likeAndroid && /android/i.test(ua)
-      , nexusMobile = /nexus\s*[0-6]\s*/i.test(ua)
-      , nexusTablet = !nexusMobile && /nexus\s*[0-9]+/i.test(ua)
-      , chromeos = /CrOS/.test(ua)
-      , silk = /silk/i.test(ua)
-      , sailfish = /sailfish/i.test(ua)
-      , tizen = /tizen/i.test(ua)
-      , webos = /(web|hpw)os/i.test(ua)
-      , windowsphone = /windows phone/i.test(ua)
-      , windows = !windowsphone && /windows/i.test(ua)
-      , mac = !iosdevice && !silk && /macintosh/i.test(ua)
-      , linux = !android && !sailfish && !tizen && !webos && /linux/i.test(ua)
-      , edgeVersion = getFirstMatch(/edge\/(\d+(\.\d+)?)/i)
-      , versionIdentifier = getFirstMatch(/version\/(\d+(\.\d+)?)/i)
-      , tablet = /tablet/i.test(ua)
-      , mobile = !tablet && /[^-]mobi/i.test(ua)
-      , xbox = /xbox/i.test(ua)
-      , result
-
-    if (/opera|opr|opios/i.test(ua)) {
-      result = {
-        name: 'Opera'
-      , opera: t
-      , version: versionIdentifier || getFirstMatch(/(?:opera|opr|opios)[\s\/](\d+(\.\d+)?)/i)
-      }
-    }
-    else if (/coast/i.test(ua)) {
-      result = {
-        name: 'Opera Coast'
-        , coast: t
-        , version: versionIdentifier || getFirstMatch(/(?:coast)[\s\/](\d+(\.\d+)?)/i)
-      }
->>>>>>> upstream/master
     }
     return number;
 };
@@ -24739,7 +24391,6 @@ module.exports = function(desc, cache) {
         console.warn('An empty description was passed as an argument.');
         return desc;
     }
-<<<<<<< HEAD
 
     var session = transform.parse(desc.sdp);
 
@@ -25019,219 +24670,8 @@ exports.parse = function(sdp) {
         });
 
         delete mLine.ssrcs;
-=======
-    else if (/ucbrowser/i.test(ua)) {
-      result = {
-          name: 'UC Browser'
-        , ucbrowser: t
-        , version: getFirstMatch(/(?:ucbrowser)[\s\/](\d+(?:\.\d+)+)/i)
-      }
-    }
-    else if (/mxios/i.test(ua)) {
-      result = {
-        name: 'Maxthon'
-        , maxthon: t
-        , version: getFirstMatch(/(?:mxios)[\s\/](\d+(?:\.\d+)+)/i)
-      }
-    }
-    else if (/epiphany/i.test(ua)) {
-      result = {
-        name: 'Epiphany'
-        , epiphany: t
-        , version: getFirstMatch(/(?:epiphany)[\s\/](\d+(?:\.\d+)+)/i)
-      }
-    }
-    else if (/puffin/i.test(ua)) {
-      result = {
-        name: 'Puffin'
-        , puffin: t
-        , version: getFirstMatch(/(?:puffin)[\s\/](\d+(?:\.\d+)?)/i)
-      }
-    }
-    else if (/sleipnir/i.test(ua)) {
-      result = {
-        name: 'Sleipnir'
-        , sleipnir: t
-        , version: getFirstMatch(/(?:sleipnir)[\s\/](\d+(?:\.\d+)+)/i)
-      }
-    }
-    else if (/k-meleon/i.test(ua)) {
-      result = {
-        name: 'K-Meleon'
-        , kMeleon: t
-        , version: getFirstMatch(/(?:k-meleon)[\s\/](\d+(?:\.\d+)+)/i)
-      }
-    }
-    else if (windowsphone) {
-      result = {
-        name: 'Windows Phone'
-      , windowsphone: t
-      }
-      if (edgeVersion) {
-        result.msedge = t
-        result.version = edgeVersion
-      }
-      else {
-        result.msie = t
-        result.version = getFirstMatch(/iemobile\/(\d+(\.\d+)?)/i)
-      }
-    }
-    else if (/msie|trident/i.test(ua)) {
-      result = {
-        name: 'Internet Explorer'
-      , msie: t
-      , version: getFirstMatch(/(?:msie |rv:)(\d+(\.\d+)?)/i)
-      }
-    } else if (chromeos) {
-      result = {
-        name: 'Chrome'
-      , chromeos: t
-      , chromeBook: t
-      , chrome: t
-      , version: getFirstMatch(/(?:chrome|crios|crmo)\/(\d+(\.\d+)?)/i)
-      }
-    } else if (/chrome.+? edge/i.test(ua)) {
-      result = {
-        name: 'Microsoft Edge'
-      , msedge: t
-      , version: edgeVersion
-      }
-    }
-    else if (/vivaldi/i.test(ua)) {
-      result = {
-        name: 'Vivaldi'
-        , vivaldi: t
-        , version: getFirstMatch(/vivaldi\/(\d+(\.\d+)?)/i) || versionIdentifier
-      }
-    }
-    else if (sailfish) {
-      result = {
-        name: 'Sailfish'
-      , sailfish: t
-      , version: getFirstMatch(/sailfish\s?browser\/(\d+(\.\d+)?)/i)
-      }
-    }
-    else if (/seamonkey\//i.test(ua)) {
-      result = {
-        name: 'SeaMonkey'
-      , seamonkey: t
-      , version: getFirstMatch(/seamonkey\/(\d+(\.\d+)?)/i)
-      }
-    }
-    else if (/firefox|iceweasel|fxios/i.test(ua)) {
-      result = {
-        name: 'Firefox'
-      , firefox: t
-      , version: getFirstMatch(/(?:firefox|iceweasel|fxios)[ \/](\d+(\.\d+)?)/i)
-      }
-      if (/\((mobile|tablet);[^\)]*rv:[\d\.]+\)/i.test(ua)) {
-        result.firefoxos = t
-      }
-    }
-    else if (silk) {
-      result =  {
-        name: 'Amazon Silk'
-      , silk: t
-      , version : getFirstMatch(/silk\/(\d+(\.\d+)?)/i)
-      }
-    }
-    else if (/phantom/i.test(ua)) {
-      result = {
-        name: 'PhantomJS'
-      , phantom: t
-      , version: getFirstMatch(/phantomjs\/(\d+(\.\d+)?)/i)
-      }
-    }
-    else if (/slimerjs/i.test(ua)) {
-      result = {
-        name: 'SlimerJS'
-        , slimer: t
-        , version: getFirstMatch(/slimerjs\/(\d+(\.\d+)?)/i)
-      }
-    }
-    else if (/blackberry|\bbb\d+/i.test(ua) || /rim\stablet/i.test(ua)) {
-      result = {
-        name: 'BlackBerry'
-      , blackberry: t
-      , version: versionIdentifier || getFirstMatch(/blackberry[\d]+\/(\d+(\.\d+)?)/i)
-      }
-    }
-    else if (webos) {
-      result = {
-        name: 'WebOS'
-      , webos: t
-      , version: versionIdentifier || getFirstMatch(/w(?:eb)?osbrowser\/(\d+(\.\d+)?)/i)
-      };
-      /touchpad\//i.test(ua) && (result.touchpad = t)
-    }
-    else if (/bada/i.test(ua)) {
-      result = {
-        name: 'Bada'
-      , bada: t
-      , version: getFirstMatch(/dolfin\/(\d+(\.\d+)?)/i)
-      };
-    }
-    else if (tizen) {
-      result = {
-        name: 'Tizen'
-      , tizen: t
-      , version: getFirstMatch(/(?:tizen\s?)?browser\/(\d+(\.\d+)?)/i) || versionIdentifier
-      };
-    }
-    else if (/qupzilla/i.test(ua)) {
-      result = {
-        name: 'QupZilla'
-        , qupzilla: t
-        , version: getFirstMatch(/(?:qupzilla)[\s\/](\d+(?:\.\d+)+)/i) || versionIdentifier
-      }
-    }
-    else if (/chromium/i.test(ua)) {
-      result = {
-        name: 'Chromium'
-        , chromium: t
-        , version: getFirstMatch(/(?:chromium)[\s\/](\d+(?:\.\d+)?)/i) || versionIdentifier
-      }
-    }
-    else if (/chrome|crios|crmo/i.test(ua)) {
-      result = {
-        name: 'Chrome'
-        , chrome: t
-        , version: getFirstMatch(/(?:chrome|crios|crmo)\/(\d+(\.\d+)?)/i)
-      }
-    }
-    else if (android) {
-      result = {
-        name: 'Android'
-        , version: versionIdentifier
-      }
-    }
-    else if (/safari|applewebkit/i.test(ua)) {
-      result = {
-        name: 'Safari'
-      , safari: t
-      }
-      if (versionIdentifier) {
-        result.version = versionIdentifier
-      }
-    }
-    else if (iosdevice) {
-      result = {
-        name : iosdevice == 'iphone' ? 'iPhone' : iosdevice == 'ipad' ? 'iPad' : 'iPod'
-      }
-      // WTF: version is not part of user agent in web apps
-      if (versionIdentifier) {
-        result.version = versionIdentifier
-      }
-    }
-    else if(/googlebot/i.test(ua)) {
-      result = {
-        name: 'Googlebot'
-      , googlebot: t
-      , version: getFirstMatch(/googlebot\/(\d+(\.\d+))/i) || versionIdentifier
->>>>>>> upstream/master
       }
 
-<<<<<<< HEAD
       // split ssrcs in ssrc groups
       if (typeof mLine.ssrcGroups !== 'undefined' &&
         Array.isArray(mLine.ssrcGroups)) {
@@ -25240,123 +24680,6 @@ exports.parse = function(sdp) {
               ssrcGroup.ssrcs = ssrcGroup.ssrcs.split(' ');
             }
           });
-=======
-    // set webkit or gecko flag for browsers based on these engines
-    if (!result.msedge && /(apple)?webkit/i.test(ua)) {
-      if (/(apple)?webkit\/537\.36/i.test(ua)) {
-        result.name = result.name || "Blink"
-        result.blink = t
-      } else {
-        result.name = result.name || "Webkit"
-        result.webkit = t
-      }
-      if (!result.version && versionIdentifier) {
-        result.version = versionIdentifier
-      }
-    } else if (!result.opera && /gecko\//i.test(ua)) {
-      result.name = result.name || "Gecko"
-      result.gecko = t
-      result.version = result.version || getFirstMatch(/gecko\/(\d+(\.\d+)?)/i)
-    }
-
-    // set OS flags for platforms that have multiple browsers
-    if (!result.msedge && (android || result.silk)) {
-      result.android = t
-    } else if (iosdevice) {
-      result[iosdevice] = t
-      result.ios = t
-    } else if (mac) {
-      result.mac = t
-    } else if (xbox) {
-      result.xbox = t
-    } else if (windows) {
-      result.windows = t
-    } else if (linux) {
-      result.linux = t
-    }
-
-    // OS version extraction
-    var osVersion = '';
-    if (result.windowsphone) {
-      osVersion = getFirstMatch(/windows phone (?:os)?\s?(\d+(\.\d+)*)/i);
-    } else if (iosdevice) {
-      osVersion = getFirstMatch(/os (\d+([_\s]\d+)*) like mac os x/i);
-      osVersion = osVersion.replace(/[_\s]/g, '.');
-    } else if (android) {
-      osVersion = getFirstMatch(/android[ \/-](\d+(\.\d+)*)/i);
-    } else if (result.webos) {
-      osVersion = getFirstMatch(/(?:web|hpw)os\/(\d+(\.\d+)*)/i);
-    } else if (result.blackberry) {
-      osVersion = getFirstMatch(/rim\stablet\sos\s(\d+(\.\d+)*)/i);
-    } else if (result.bada) {
-      osVersion = getFirstMatch(/bada\/(\d+(\.\d+)*)/i);
-    } else if (result.tizen) {
-      osVersion = getFirstMatch(/tizen[\/\s](\d+(\.\d+)*)/i);
-    }
-    if (osVersion) {
-      result.osversion = osVersion;
-    }
-
-    // device type extraction
-    var osMajorVersion = osVersion.split('.')[0];
-    if (
-         tablet
-      || nexusTablet
-      || iosdevice == 'ipad'
-      || (android && (osMajorVersion == 3 || (osMajorVersion >= 4 && !mobile)))
-      || result.silk
-    ) {
-      result.tablet = t
-    } else if (
-         mobile
-      || iosdevice == 'iphone'
-      || iosdevice == 'ipod'
-      || android
-      || nexusMobile
-      || result.blackberry
-      || result.webos
-      || result.bada
-    ) {
-      result.mobile = t
-    }
-
-    // Graded Browser Support
-    // http://developer.yahoo.com/yui/articles/gbs
-    if (result.msedge ||
-        (result.msie && result.version >= 10) ||
-        (result.yandexbrowser && result.version >= 15) ||
-		    (result.vivaldi && result.version >= 1.0) ||
-        (result.chrome && result.version >= 20) ||
-        (result.firefox && result.version >= 20.0) ||
-        (result.safari && result.version >= 6) ||
-        (result.opera && result.version >= 10.0) ||
-        (result.ios && result.osversion && result.osversion.split(".")[0] >= 6) ||
-        (result.blackberry && result.version >= 10.1)
-        ) {
-      result.a = t;
-    }
-    else if ((result.msie && result.version < 10) ||
-        (result.chrome && result.version < 20) ||
-        (result.firefox && result.version < 20.0) ||
-        (result.safari && result.version < 6) ||
-        (result.opera && result.version < 10.0) ||
-        (result.ios && result.osversion && result.osversion.split(".")[0] < 6)
-        ) {
-      result.c = t
-    } else result.x = t
-
-    return result
-  }
-
-  var bowser = detect(typeof navigator !== 'undefined' ? navigator.userAgent : '')
-
-  bowser.test = function (browserList) {
-    for (var i = 0; i < browserList.length; ++i) {
-      var browserItem = browserList[i];
-      if (typeof browserItem=== 'string') {
-        if (browserItem in bowser) {
-          return true;
->>>>>>> upstream/master
         }
     });
   }
@@ -25374,244 +24697,6 @@ exports.parse = function(sdp) {
   return session;
 };
 
-<<<<<<< HEAD
-=======
-},{}],41:[function(require,module,exports){
-/*!
- * @name JavaScript/NodeJS Merge v1.2.0
- * @author yeikos
- * @repository https://github.com/yeikos/js.merge
-
- * Copyright 2014 yeikos - MIT license
- * https://raw.github.com/yeikos/js.merge/master/LICENSE
- */
-
-;(function(isNode) {
-
-	/**
-	 * Merge one or more objects 
-	 * @param bool? clone
-	 * @param mixed,... arguments
-	 * @return object
-	 */
-
-	var Public = function(clone) {
-
-		return merge(clone === true, false, arguments);
-
-	}, publicName = 'merge';
-
-	/**
-	 * Merge two or more objects recursively 
-	 * @param bool? clone
-	 * @param mixed,... arguments
-	 * @return object
-	 */
-
-	Public.recursive = function(clone) {
-
-		return merge(clone === true, true, arguments);
-
-	};
-
-	/**
-	 * Clone the input removing any reference
-	 * @param mixed input
-	 * @return mixed
-	 */
-
-	Public.clone = function(input) {
-
-		var output = input,
-			type = typeOf(input),
-			index, size;
-
-		if (type === 'array') {
-
-			output = [];
-			size = input.length;
-
-			for (index=0;index<size;++index)
-
-				output[index] = Public.clone(input[index]);
-
-		} else if (type === 'object') {
-
-			output = {};
-
-			for (index in input)
-
-				output[index] = Public.clone(input[index]);
-
-		}
-
-		return output;
-
-	};
-
-	/**
-	 * Merge two objects recursively
-	 * @param mixed input
-	 * @param mixed extend
-	 * @return mixed
-	 */
-
-	function merge_recursive(base, extend) {
-
-		if (typeOf(base) !== 'object')
-
-			return extend;
-
-		for (var key in extend) {
-
-			if (typeOf(base[key]) === 'object' && typeOf(extend[key]) === 'object') {
-
-				base[key] = merge_recursive(base[key], extend[key]);
-
-			} else {
-
-				base[key] = extend[key];
-
-			}
-
-		}
-
-		return base;
-
-	}
-
-	/**
-	 * Merge two or more objects
-	 * @param bool clone
-	 * @param bool recursive
-	 * @param array argv
-	 * @return object
-	 */
-
-	function merge(clone, recursive, argv) {
-
-		var result = argv[0],
-			size = argv.length;
-
-		if (clone || typeOf(result) !== 'object')
-
-			result = {};
-
-		for (var index=0;index<size;++index) {
-
-			var item = argv[index],
-
-				type = typeOf(item);
-
-			if (type !== 'object') continue;
-
-			for (var key in item) {
-
-				var sitem = clone ? Public.clone(item[key]) : item[key];
-
-				if (recursive) {
-
-					result[key] = merge_recursive(result[key], sitem);
-
-				} else {
-
-					result[key] = sitem;
-
-				}
-
-			}
-
-		}
-
-		return result;
-
-	}
-
-	/**
-	 * Get type of variable
-	 * @param mixed input
-	 * @return string
-	 *
-	 * @see http://jsperf.com/typeofvar
-	 */
-
-	function typeOf(input) {
-
-		return ({}).toString.call(input).slice(8, -1).toLowerCase();
-
-	}
-
-	if (isNode) {
-
-		module.exports = Public;
-
-	} else {
-
-		window[publicName] = Public;
-
-	}
-
-})(typeof module === 'object' && module && typeof module.exports === 'object' && module.exports);
-},{}],42:[function(require,module,exports){
-module.exports={
-  "name": "rtcninja",
-  "version": "0.6.7",
-  "description": "WebRTC API wrapper to deal with different browsers",
-  "author": {
-    "name": "Iñaki Baz Castillo",
-    "email": "inaki.baz@eface2face.com",
-    "url": "http://eface2face.com"
-  },
-  "contributors": [
-    {
-      "name": "Jesús Pérez",
-      "email": "jesus.perez@eface2face.com"
-    }
-  ],
-  "license": "MIT",
-  "main": "lib/rtcninja.js",
-  "homepage": "https://github.com/eface2face/rtcninja.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/eface2face/rtcninja.js.git"
-  },
-  "keywords": [
-    "webrtc"
-  ],
-  "engines": {
-    "node": ">=0.10.32"
-  },
-  "dependencies": {
-    "bowser": "^1.2.0",
-    "debug": "^2.2.0",
-    "merge": "^1.2.0"
-  },
-  "devDependencies": {
-    "browserify": "^13.0.1",
-    "gulp": "git+https://github.com/gulpjs/gulp.git#4.0",
-    "gulp-expect-file": "0.0.7",
-    "gulp-filelog": "^0.4.1",
-    "gulp-header": "^1.8.2",
-    "gulp-jscs": "^3.0.2",
-    "gulp-jscs-stylish": "^1.4.0",
-    "gulp-jshint": "^2.0.1",
-    "gulp-rename": "^1.2.2",
-    "gulp-uglify": "^1.5.3",
-    "jshint-stylish": "^2.2.0",
-    "vinyl-source-stream": "^1.1.0"
-  },
-  "readme": "# rtcninja.js <img src=\"http://www.pubnub.com/blog/wp-content/uploads/2014/01/google-webrtc-logo.png\" height=\"30\" width=\"30\">\n\nWebRTC API wrapper to deal with different browsers transparently, [eventually](http://iswebrtcreadyyet.com/) this library shouldn't be needed. We only have to wait until W3C group in charge [finishes the specification](https://tools.ietf.org/wg/rtcweb/) and the different browsers implement it correctly :sweat_smile:.\n\n<img src=\"http://images4.fanpop.com/image/photos/21800000/browser-fight-google-chrome-21865454-600-531.jpg\" height=\"250\" width=\"250\">\n\nSupported environments:\n* [Google Chrome](https://www.google.com/chrome/browser/desktop/index.html) (desktop & mobile)\n* [Google Canary](https://www.google.com/chrome/browser/canary.html) (desktop & mobile)\n* [Mozilla Firefox](https://www.mozilla.org/en-GB/firefox/new) (desktop & mobile)\n* [Firefox Nigthly](https://nightly.mozilla.org/) (desktop & mobile)\n* [Opera](http://www.opera.com/)\n* [Vivaldi](https://vivaldi.com/)\n* [CrossWalk](https://crosswalk-project.org/)\n* [Cordova](http://cordova.apache.org/): iOS support, you only have to use our plugin [following these steps](https://github.com/eface2face/cordova-plugin-iosrtc#usage).\n* [NW.js](https://github.com/nwjs/nw.js/)\n* [Electron](https://github.com/atom/electron)\n\n\n## Installation\n\n### **npm**:\n\n```bash\n$ npm install rtcninja\n```\n\nand then:\n\n```javascript\nvar rtcninja = require('rtcninja');\n```\n\n### **bower**:\n\n```bash\n$ bower install rtcninja\n```\n\n\n## Browserified library\n\nTake a browserified version of the library from the `dist/` folder:\n\n* `dist/rtcninja.js`: The uncompressed version.\n* `dist/rtcninja.min.js`: The compressed production-ready version.\n\nThey expose the global `window.rtcninja` module.\n\n\n## Usage\n\nIn the [examples](./examples/) folder we provide a complete one.\n\n```javascript\n// Must first call it.\nrtcninja();\n\n// Then check.\nif (rtcninja.hasWebRTC()) {\n    // Do something.\n}\nelse {\n    // Do something.\n}\n```\n\n\n## Documentation\n\nYou can read the full [API documentation](docs/index.md) in the docs folder.\n\n\n## Issues\n\nhttps://github.com/eface2face/rtcninja.js/issues\n\n\n## Developer guide\n\n* Create a branch with a name including your user and a meaningful word about the fix/feature you're going to implement, ie: \"jesusprubio/fixstuff\"\n* Use [GitHub pull requests](https://help.github.com/articles/using-pull-requests).\n* Conventions:\n * We use [JSHint](http://jshint.com/) and [Crockford's Styleguide](http://javascript.crockford.com/code.html).\n * Please run `grunt lint` to be sure your code fits with them.\n\n\n### Debugging\n\nThe library includes the Node [debug](https://github.com/visionmedia/debug) module. In order to enable debugging:\n\nIn Node set the `DEBUG=rtcninja*` environment variable before running the application, or set it at the top of the script:\n\n```javascript\nprocess.env.DEBUG = 'rtcninja*';\n```\n\nIn the browser run `rtcninja.debug.enable('rtcninja*');` and reload the page. Note that the debugging settings are stored into the browser LocalStorage. To disable it run `rtcninja.debug.disable('rtcninja*');`.\n\n\n## Copyright & License\n\n* eFace2Face Inc.\n* [MIT](./LICENSE)\n",
-  "readmeFilename": "README.md",
-  "gitHead": "d36b02d0503ca152771692935a4096130f28dc5d",
-  "bugs": {
-    "url": "https://github.com/eface2face/rtcninja.js/issues"
-  },
-  "_id": "rtcninja@0.6.7",
-  "scripts": {},
-  "_shasum": "f7c8855f2c0e41ae08c638375bad1dc977369ec2",
-  "_from": "rtcninja@>=0.6.7 <0.7.0"
-}
->>>>>>> upstream/master
 
 },{"sdp-transform":44}],43:[function(require,module,exports){
 var grammar = module.exports = {
@@ -25663,7 +24748,7 @@ var grammar = module.exports = {
   a: [
     { //a=rtpmap:110 opus/48000/2
       push: 'rtp',
-      reg: /^rtpmap:(\d*) ([\w\-\.]*)(?:\s*\/(\d*)(?:\s*\/(\S*))?)?/,
+      reg: /^rtpmap:(\d*) ([\w\-]*)(?:\s*\/(\d*)(?:\s*\/(\S*))?)?/,
       names: ['payload', 'codec', 'rate', 'encoding'],
       format: function (o) {
         return (o.encoding) ?
@@ -25852,16 +24937,6 @@ var grammar = module.exports = {
       name: 'rtcpRsize',
       reg: /^(rtcp-rsize)/
     },
-    { //a=sctpmap:5000 webrtc-datachannel 1024
-      name: 'sctpmap',
-      reg: /^sctpmap:([\w_\/]*) (\S*)(?: (\S*))?/,
-      names: ['sctpmapNumber', 'app', 'maxMessageSize'],
-      format: function (o) {
-        return (o.maxMessageSize != null) ?
-          "sctpmap:%s %s %s" :
-          "sctpmap:%s %s";
-      }
-    },
     { // any a= that we don't understand is kepts verbatim on media.invalid
       push: 'invalid',
       names: ["value"]
@@ -25959,7 +25034,7 @@ exports.parse = function (sdp) {
 };
 
 var fmtpReducer = function (acc, expr) {
-  var s = expr.split(/=(.+)/, 2);
+  var s = expr.split('=');
   if (s.length === 2) {
     acc[s[0]] = toIntIfInt(s[1]);
   }
@@ -26104,7 +25179,6 @@ module.exports = function (session, opts) {
 };
 
 },{"./grammar":43}],47:[function(require,module,exports){
-<<<<<<< HEAD
 var grammar = module.exports = {
   v: [{
       name: 'version',
@@ -26473,17 +25547,11 @@ exports.parseRemoteCandidates = function (str) {
 },{"./grammar":47}],50:[function(require,module,exports){
 arguments[4][46][0].apply(exports,arguments)
 },{"./grammar":47,"dup":46}],51:[function(require,module,exports){
-=======
->>>>>>> upstream/master
 module.exports={
   "name": "jssip",
   "title": "JsSIP",
   "description": "the Javascript SIP library",
-<<<<<<< HEAD
-  "version": "1.0.1-sl",
-=======
-  "version": "2.0.1",
->>>>>>> upstream/master
+  "version": "2.0.1-sl",
   "homepage": "http://jssip.net",
   "author": "José Luis Millán <jmillan@aliax.net> (https://github.com/jmillan)",
   "contributors": [
@@ -26509,13 +25577,8 @@ module.exports={
   },
   "dependencies": {
     "debug": "^2.2.0",
-<<<<<<< HEAD
     "sdp-transform": "^1.6.2",
     "sdp-interop-sl": "^0.2.0"
-=======
-    "rtcninja": "^0.6.7",
-    "sdp-transform": "^1.6.2"
->>>>>>> upstream/master
   },
   "devDependencies": {
     "browserify": "^13.0.1",
