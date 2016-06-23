@@ -28,8 +28,7 @@
   },
   "dependencies": {
     "debug": "^2.2.0",
-    "sdp-transform": "^1.6.2",
-    "sdp-interop-sl": "^0.2.1"
+    "sdp-transform": "^1.6.2"
   },
   "devDependencies": {
     "browserify": "^13.0.1",
