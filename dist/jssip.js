@@ -1,5 +1,5 @@
 /*
- * JsSIP v2.0.4
+ * JsSIP v2.0.5
  * the Javascript SIP library
  * Copyright: 2012-2016 José Luis Millán <jmillan@aliax.net> (https://github.com/jmillan)
  * Homepage: http://jssip.net
@@ -15790,18 +15790,34 @@ function receiveReinvite(request) {
       }
     }
 
-    var e = {originator:'remote', type:'offer', sdp:request.body};
-    this.emit('sdp', e);
+    var await = false;
+    var setSdp = function(sdp) {
+       this.connection.setRemoteDescription(
+        new window.RTCSessionDescription({type:'offer', sdp: sdp}),
+        // success
+        answer,
+        // failure
+        function() {
+          request.reply(488);
+        }
+      );
+    }.bind(this);
 
-    this.connection.setRemoteDescription(
-      new window.RTCSessionDescription({type:'offer', sdp:e.sdp}),
-      // success
-      answer,
-      // failure
-      function() {
-        request.reply(488);
-      }
-    );
+    var e = {
+      originator:'remote',
+      type:'offer',
+      sdp:request.body,
+    };
+    e.await = function() {
+      await = true;
+      return function() {
+        setSdp(e.sdp);
+      };
+    };
+    this.emit('sdp', e);
+    if (!await) {
+      setSdp(e.sdp);
+    }
   }
   else {
     this.late_sdp = true;
@@ -23872,7 +23888,7 @@ module.exports={
   "name": "jssip",
   "title": "JsSIP",
   "description": "the Javascript SIP library",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "homepage": "http://jssip.net",
   "author": "José Luis Millán <jmillan@aliax.net> (https://github.com/jmillan)",
   "contributors": [
