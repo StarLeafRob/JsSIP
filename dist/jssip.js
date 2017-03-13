@@ -1,7 +1,7 @@
 /*
  * JsSIP v2.0.5
  * the Javascript SIP library
- * Copyright: 2012-2016 José Luis Millán <jmillan@aliax.net> (https://github.com/jmillan)
+ * Copyright: 2012-2017 José Luis Millán <jmillan@aliax.net> (https://github.com/jmillan)
  * Homepage: http://jssip.net
  * License: MIT
  */
@@ -15197,10 +15197,11 @@ RTCSession.prototype.unhold = function(options, done) {
 };
 
 
-RTCSession.prototype.renegotiate = function(options, done) {
+RTCSession.prototype.renegotiate = function(options, done, onSipMessage) {
   debug('renegotiate()');
 
   options = options || {};
+  onSipMessage = onSipMessage || function () {};
 
   var self = this,
     eventHandlers,
@@ -15240,7 +15241,8 @@ RTCSession.prototype.renegotiate = function(options, done) {
     sendReinvite.call(this, {
       eventHandlers: eventHandlers,
       rtcOfferConstraints: rtcOfferConstraints,
-      extraHeaders: options.extraHeaders
+      extraHeaders: options.extraHeaders,
+      onSipMessage: onSipMessage
     });
   }
 
@@ -16380,6 +16382,7 @@ function sendReinvite(options) {
     extraHeaders = options.extraHeaders || [],
     eventHandlers = options.eventHandlers || {},
     rtcOfferConstraints = options.rtcOfferConstraints || this.rtcOfferConstraints || null,
+    onSipMessage = options.onSipMessage || function () {},
     succeeded = false;
 
   extraHeaders.push('Contact: ' + this.contact);
@@ -16419,6 +16422,7 @@ function sendReinvite(options) {
           }
         }
       });
+      onSipMessage(request.outgoingRequest);
     },
     // failure
     function() {
@@ -16432,6 +16436,7 @@ function sendReinvite(options) {
     if (self.status === C.STATUS_TERMINATED) {
       return;
     }
+    onSipMessage(response);
 
     sendRequest.call(self, JsSIP_C.ACK);
 
