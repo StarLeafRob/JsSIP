@@ -1,10 +1,84 @@
 CHANGELOG
 =========
 
+Version 3.0.5 (released in 2017-03-21)
+--------------------------------------
+
+* Update deps.
+* Add more debug logs into `RTCSession` class.
+
+
+Version 3.0.4 (released in 2017-03-13)
+--------------------------------------
+
+* Update deps.
+* If ICE fails, terminate the session with status code 408.
+
+
+Version 3.0.3 (released in 2017-02-22)
+--------------------------------------
+
+* Fix #426. Properly emit DTMF events.
+
+
+Version 3.0.2 (released in 2017-02-17)
+--------------------------------------
+
+* Fix #418. Incorrect socket status on failure.
+
+
+Version 3.0.1 (released in 2017-01-19)
+--------------------------------------
+
+* Close #419. Allow sending the DTMF 'R' key. Used to report a hook flash.
+
+
+Version 3.0.0 (released in 2016-11-19)
+--------------------------------------
+
+* Remove `rtcninja` dependency. Instead use `webrtc-adapter`.
+* `RTCSession:`: Remove `RTCPeerConnection` event wrappers. The app can access them via `session.connection`.
+* `RTCSession:`: Emit WebRTC related events when internal calls to `getUserMedia()`, `createOffer()`, etc. fail.
+* Use debug NPM fixed "2.0.0" version (until a pending bug in such a library is fixed).
+* `UA`: Remove `ws_servers` option.
+* `UA`: Allow immediate restart
+
+
+Version 2.0.6 (released in 2016-09-30)
+--------------------------------------
+
+* Improve library logs.
+
+
+Version 2.0.5 (released in 2016-09-28)
+--------------------------------------
+
+* Update dependencies.
+
+
+Version 2.0.4 (released in 2016-09-15)
+--------------------------------------
+
+* Fix #400. Corrupt NPM packege.
+
+
+Version 2.0.3 (released in 2016-08-23)
+--------------------------------------
+
+* Fix #385. No CANCEL request sent for authenticated requests.
+
+
+Version 2.0.2 (released in 2016-06-17)
+--------------------------------------
+
+* Fix `gulp-header` dependency version.
+
+
 Version 2.0.1 (released in 2016-06-09)
 --------------------------------------
 
 * Export `JsSIP.WebSocketInterface`.
+
 
 Version 2.0.0 (released in 2016-06-07)
 --------------------------------------
@@ -15,6 +89,7 @@ Version 2.0.0 (released in 2016-06-07)
 * Fix #370. Outgoing request instance being shared by two transactions.
 * Fix #296. Abrupt transport disconnection on UA.stop().
 * Socket interface. Make JsSIP socket agnostic.
+
 
 Version 1.0.1 (released in 2016-05-17)
 ---------------------------------------

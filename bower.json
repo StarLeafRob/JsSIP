@@ -1,6 +1,6 @@
 {
   "name": "jssip",
-  "version": "2.0.5",
+  "version": "3.0.5",
   "description": "the Javascript SIP library",
   "main": "dist/jssip.js",
   "homepage": "http://jssip.net",
@@ -20,7 +20,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/StarLeafRob/JsSIP.git"
+    "url": "https://github.com/versatica/JsSIP.git"
   },
   "ignore": [
     "node_modules",
