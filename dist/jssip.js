@@ -14186,11 +14186,11 @@ RTCSession.prototype.answer = function(options) {
 
     if (! self.late_sdp) {
       var e = {originator:'remote', type:'offer', sdp:request.body};
-      var offer = new RTCSessionDescription({type:'offer', sdp:e.sdp});
 
       debug('emit "sdp"');
-
       self.emit('sdp', e);
+
+      var offer = new RTCSessionDescription({type:'offer', sdp:e.sdp});
 
       self.connection.setRemoteDescription(offer)
         .then(remoteDescriptionSucceededOrNotNeeded)
@@ -15484,11 +15484,11 @@ function receiveUpdate(request) {
   }
 
   var e = {originator:'remote', type:'offer', sdp:request.body};
-  var offer = new RTCSessionDescription({type:'offer', sdp:e.sdp});
 
   debug('emit "sdp"');
-
   this.emit('sdp', e);
+
+  var offer = new RTCSessionDescription({type:'offer', sdp:e.sdp});
 
   this.connection.setRemoteDescription(offer)
     .then(function() {
@@ -15859,9 +15859,9 @@ function receiveInviteResponse(response) {
         break;
       }
 
-      debug('emit "sdp"');
-
       e = {originator:'remote', type:'pranswer', sdp:response.body};
+
+      debug('emit "sdp"');
       this.emit('sdp', e);
 
       var pranswer = new RTCSessionDescription({type:'pranswer', sdp:e.sdp});
@@ -15888,9 +15888,9 @@ function receiveInviteResponse(response) {
         break;
       }
 
-      debug('emit "sdp"');
-
       e = {originator:'remote', type:'answer', sdp:response.body};
+
+      debug('emit "sdp"');
       this.emit('sdp', e);
 
       var answer = new RTCSessionDescription({type:'answer', sdp:e.sdp});
@@ -16004,11 +16004,11 @@ function sendReinvite(options) {
     }
 
     var e = {originator:'remote', type:'answer', sdp:response.body};
-    var answer = new RTCSessionDescription({type:'answer', sdp:e.sdp});
 
     debug('emit "sdp"');
-
     self.emit('sdp', e);
+
+    var answer = new RTCSessionDescription({type:'answer', sdp:e.sdp});
 
     self.connection.setRemoteDescription(answer)
       .then(function() {
@@ -16145,11 +16145,11 @@ function sendUpdate(options) {
       }
 
       var e = {originator:'remote', type:'answer', sdp:response.body};
-      var answer = new RTCSessionDescription({type:'answer', sdp:e.sdp});
 
       debug('emit "sdp"');
-
       self.emit('sdp', e);
+
+      var answer = new RTCSessionDescription({type:'answer', sdp:e.sdp});
 
       self.connection.setRemoteDescription(answer)
         .then(function() {
