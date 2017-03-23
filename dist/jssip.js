@@ -15087,7 +15087,7 @@ function createRTCConnection(pcConfig, rtcConstraints) {
 
   this.connection = new RTCPeerConnection(pcConfig, rtcConstraints);
 
-  this.connection.addEventListener('iceconnectionstatechange', function() {
+  this.connection.oniceconnectionstatechange = function() {
     var state = self.connection.iceConnectionState;
 
     // TODO: Do more with different states.
@@ -15098,7 +15098,8 @@ function createRTCConnection(pcConfig, rtcConstraints) {
         reason_phrase: JsSIP_C.causes.RTP_TIMEOUT
       });
     }
-  });
+    self.emit('peerconnection:iceconnectionstatechange', state);
+  };
 }
 
 function createLocalDescription(type, onSuccess, onFailure, constraints) {
@@ -15139,13 +15140,11 @@ function createLocalDescription(type, onSuccess, onFailure, constraints) {
 
   // createAnswer or createOffer succeeded
   function createSucceeded(desc) {
-    var listener;
 
-    connection.addEventListener('icecandidate', listener = function(event) {
+    connection.onicecandidate = function(event) {
       var candidate = event.candidate;
-
       if (! candidate) {
-        connection.removeEventListener('icecandidate', listener);
+        connection.onicecandidate = undefined;
         self.rtcReady = true;
 
         if (onSuccess) {
@@ -15158,7 +15157,8 @@ function createLocalDescription(type, onSuccess, onFailure, constraints) {
         }
         onSuccess = null;
       }
-    });
+      self.emit('peerconnection:onicecandidate');
+    };
 
     connection.setLocalDescription(desc)
       .then(function() {
