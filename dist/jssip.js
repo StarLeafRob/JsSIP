@@ -1,5 +1,5 @@
 /*
- * JsSIP v3.0.5-sl
+ * JsSIP v3.0.6-sl
  * the Javascript SIP library
  * Copyright: 2012-2017 José Luis Millán <jmillan@aliax.net> (https://github.com/jmillan)
  * Homepage: http://jssip.net
@@ -14192,16 +14192,18 @@ RTCSession.prototype.answer = function(options) {
 
       var offer = new RTCSessionDescription({type:'offer', sdp:e.sdp});
 
-      self.connection.setRemoteDescription(offer)
-        .then(remoteDescriptionSucceededOrNotNeeded)
-        .catch(function(error) {
+      self.connection.setRemoteDescription(
+        offer,
+        remoteDescriptionSucceededOrNotNeeded,
+        function(error) {
           request.reply(488);
           failed.call(self, 'system', null, JsSIP_C.causes.WEBRTC_ERROR);
 
           debugerror('emit "peerconnection:setremotedescriptionfailed" [error:%o]', error);
 
           self.emit('peerconnection:setremotedescriptionfailed', error);
-        });
+        }
+      );
     }
     else {
       remoteDescriptionSucceededOrNotNeeded();
@@ -14871,20 +14873,22 @@ RTCSession.prototype.receiveRequest = function(request) {
 
           this.emit('sdp', e);
 
-          this.connection.setRemoteDescription(answer)
-            .then(function() {
+          this.connection.setRemoteDescription(
+            answer,
+            function() {
               if (!self.is_confirmed) {
                 confirmed.call(self, 'remote', request);
               }
-            })
-            .catch(function(error) {
+            },
+            function(error) {
               self.terminate({
                 cause: JsSIP_C.causes.BAD_MEDIA_DESCRIPTION,
                 status_code: 488
               });
 
               self.emit('peerconnection:setremotedescriptionfailed', error);
-            });
+            }
+          );
         }
         else {
           if (!this.is_confirmed) {
@@ -15111,28 +15115,32 @@ function createLocalDescription(type, onSuccess, onFailure, constraints) {
   this.rtcReady = false;
 
   if (type === 'offer') {
-    connection.createOffer(constraints)
-      .then(createSucceeded)
-      .catch(function(error) {
+    connection.createOffer(
+      createSucceeded,
+      function(error) {
         self.rtcReady = true;
         if (onFailure) { onFailure(error); }
 
         debugerror('emit "peerconnection:createofferfailed" [error:%o]', error);
 
         self.emit('peerconnection:createofferfailed', error);
-      });
+      },
+      constraints
+    );
   }
   else if (type === 'answer') {
-    connection.createAnswer(constraints)
-      .then(createSucceeded)
-      .catch(function(error) {
+    connection.createAnswer(
+      createSucceeded,
+      function(error) {
         self.rtcReady = true;
         if (onFailure) { onFailure(error); }
 
         debugerror('emit "peerconnection:createanswerfailed" [error:%o]', error);
 
         self.emit('peerconnection:createanswerfailed', error);
-      });
+      },
+      constraints
+    );
   }
   else {
     throw new Error('createLocalDescription() | type must be "offer" or "answer", but "' +type+ '" was given');
@@ -15160,8 +15168,9 @@ function createLocalDescription(type, onSuccess, onFailure, constraints) {
       self.emit('peerconnection:onicecandidate');
     };
 
-    connection.setLocalDescription(desc)
-      .then(function() {
+    connection.setLocalDescription(
+      desc,
+      function() {
         if (connection.iceGatheringState === 'complete') {
           self.rtcReady = true;
 
@@ -15175,15 +15184,16 @@ function createLocalDescription(type, onSuccess, onFailure, constraints) {
             onSuccess = null;
           }
         }
-      })
-      .catch(function(error) {
+      },
+      function(error) {
         self.rtcReady = true;
         if (onFailure) { onFailure(error); }
 
         debugerror('emit "peerconnection:setlocaldescriptionfailed" [error:%o]', error);
 
         self.emit('peerconnection:setlocaldescriptionfailed', error);
-      });
+      }
+    );
   }
 }
 
@@ -15322,15 +15332,15 @@ function receiveReinvite(request) {
     var await = false;
     var setSdp = function(sdp) {
       var offer = new RTCSessionDescription({type:'offer', sdp:sdp});
-       this.connection.setRemoteDescription(offer)
-        .then(doAnswer)
-        .catch(function(error) {
+      this.connection.setRemoteDescription(
+        offer,
+        doAnswer,
+        function(error) {
           request.reply(488);
-
           debugerror('emit "peerconnection:setremotedescriptionfailed" [error:%o]', error);
-
           self.emit('peerconnection:setremotedescriptionfailed', error);
-        });
+        }
+      );
     }.bind(this);
 
     var e = {
@@ -15490,8 +15500,9 @@ function receiveUpdate(request) {
 
   var offer = new RTCSessionDescription({type:'offer', sdp:e.sdp});
 
-  this.connection.setRemoteDescription(offer)
-    .then(function() {
+  this.connection.setRemoteDescription(
+    offer,
+    function() {
       if (self.remoteHold === true && hold === false) {
         self.remoteHold = false;
         onunhold.call(self, 'remote');
@@ -15518,14 +15529,15 @@ function receiveUpdate(request) {
           request.reply(500);
         }
       );
-    })
-    .catch(function(error) {
+    },
+    function(error) {
       request.reply(488);
 
       debugerror('emit "peerconnection:setremotedescriptionfailed" [error:%o]', error);
 
       self.emit('peerconnection:setremotedescriptionfailed', error);
-    });
+    }
+  );
 }
 
 /**
@@ -15866,12 +15878,15 @@ function receiveInviteResponse(response) {
 
       var pranswer = new RTCSessionDescription({type:'pranswer', sdp:e.sdp});
 
-      this.connection.setRemoteDescription(pranswer)
-        .catch(function(error) {
+      this.connection.setRemoteDescription(
+        pranswer,
+        function () {},
+        function(error) {
           debugerror('emit "peerconnection:setremotedescriptionfailed" [error:%o]', error);
 
           self.emit('peerconnection:setremotedescriptionfailed', error);
-        });
+        }
+      );
       break;
 
     case /^2[0-9]{2}$/.test(response.status_code):
@@ -15895,23 +15910,25 @@ function receiveInviteResponse(response) {
 
       var answer = new RTCSessionDescription({type:'answer', sdp:e.sdp});
 
-      this.connection.setRemoteDescription(answer)
-        .then(function() {
+      this.connection.setRemoteDescription(
+        answer,
+        function() {
           // Handle Session Timers.
           handleSessionTimersInIncomingResponse.call(self, response);
 
           accepted.call(self, 'remote', response);
           sendRequest.call(self, JsSIP_C.ACK);
           confirmed.call(self, 'local', null);
-        })
-        .catch(function(error) {
+        },
+        function(error) {
           acceptAndTerminate.call(self, response, 488, 'Not Acceptable Here');
           failed.call(self, 'remote', response, JsSIP_C.causes.BAD_MEDIA_DESCRIPTION);
 
           debugerror('emit "peerconnection:setremotedescriptionfailed" [error:%o]', error);
 
           self.emit('peerconnection:setremotedescriptionfailed', error);
-        });
+        }
+      );
       break;
 
     default:
@@ -16010,19 +16027,21 @@ function sendReinvite(options) {
 
     var answer = new RTCSessionDescription({type:'answer', sdp:e.sdp});
 
-    self.connection.setRemoteDescription(answer)
-      .then(function() {
+    self.connection.setRemoteDescription(
+      answer,
+      function() {
         if (eventHandlers.succeeded) {
           eventHandlers.succeeded(response);
         }
-      })
-      .catch(function(error) {
+      },
+      function(error) {
         onFailed();
 
         debugerror('emit "peerconnection:setremotedescriptionfailed" [error:%o]', error);
 
         self.emit('peerconnection:setremotedescriptionfailed', error);
-      });
+      }
+    );
   }
 
   function onFailed(response) {
@@ -16151,19 +16170,21 @@ function sendUpdate(options) {
 
       var answer = new RTCSessionDescription({type:'answer', sdp:e.sdp});
 
-      self.connection.setRemoteDescription(answer)
-        .then(function() {
+      self.connection.setRemoteDescription(
+        answer,
+        function() {
           if (eventHandlers.succeeded) {
             eventHandlers.succeeded(response);
           }
-        })
-        .catch(function(error) {
+        },
+        function(error) {
           onFailed();
 
           debugerror('emit "peerconnection:setremotedescriptionfailed" [error:%o]', error);
 
           self.emit('peerconnection:setremotedescriptionfailed', error);
-        });
+        }
+      );
     }
     // No SDP answer.
     else {
@@ -23508,7 +23529,7 @@ module.exports={
   "name": "jssip",
   "title": "JsSIP",
   "description": "the Javascript SIP library",
-  "version": "3.0.5-sl",
+  "version": "3.0.6-sl",
   "homepage": "http://jssip.net",
   "author": "José Luis Millán <jmillan@aliax.net> (https://github.com/jmillan)",
   "contributors": [
