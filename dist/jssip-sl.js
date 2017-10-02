@@ -1,5 +1,5 @@
 /*
- * JsSIP v3.0.8
+ * JsSIP v3.0.10
  * the Javascript SIP library
  * Copyright: 2012-2017 José Luis Millán <jmillan@aliax.net> (https://github.com/jmillan)
  * Homepage: http://jssip.net
@@ -23782,10 +23782,10 @@ function hasOwnProperty(obj, prop) {
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./support/isBuffer":38,"_process":33,"inherits":31}],40:[function(require,module,exports){
 module.exports={
-  "name": "jssip",
+  "name": "jssip-sl",
   "title": "JsSIP",
   "description": "the Javascript SIP library",
-  "version": "3.0.8",
+  "version": "3.0.10",
   "homepage": "http://jssip.net",
   "author": "José Luis Millán <jmillan@aliax.net> (https://github.com/jmillan)",
   "contributors": [
@@ -23793,6 +23793,7 @@ module.exports={
     "Saúl Ibarra Corretgé <saghul@gmail.com> (https://github.com/saghul)"
   ],
   "main": "lib/JsSIP.js",
+  "types": "lib/jssip-sl.d.ts",
   "keywords": [
     "sip",
     "websocket",

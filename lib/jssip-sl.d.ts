@@ -1,6 +1,24 @@
 declare module 'jssip-sl' {
     export class UA {
-        constructor(configuration: any);
+        constructor(configuration: {
+            uri: string;
+            sockets: any;
+            session_timers?: boolean;
+            register?: boolean;
+            contact_uri?: string;
+            display_name?: string;
+            connection_recovery_max_interval?:  number;
+            connection_recovery_min_interval?: number;
+            ha1?: string;
+            instance_id?: string;
+            no_answer_timeout?: number;
+            realm?: string;
+            register_expires?: number;
+            registrar_server?: string;
+            use_preloaded_route: boolean;
+            authorization_user?: string;
+            password?: string;
+        });
 
         on(event: string, handler: (data: any) => void): void;
 
@@ -59,128 +77,6 @@ declare module 'jssip-sl' {
             STATUS_NOT_READY: number;
             STATUS_READY: number;
             STATUS_USER_CLOSED: number;
-        };
-
-        static configuration_check: {
-            mandatory: {
-                uri: any;
-            };
-            optional: {
-                authorization_user: any;
-                connection_recovery_max_interval: any;
-                connection_recovery_min_interval: any;
-                contact_uri: any;
-                display_name: any;
-                ha1: any;
-                instance_id: any;
-                no_answer_timeout: any;
-                password: any;
-                realm: any;
-                register: any;
-                register_expires: any;
-                registrar_server: any;
-                session_timers: any;
-                sockets: any;
-                use_preloaded_route: any;
-            };
-        };
-
-        static configuration_skeleton: {
-            authorization_user: {
-                configurable: boolean;
-                value: string;
-                writable: boolean;
-            };
-            contact_uri: {
-                configurable: boolean;
-                value: string;
-                writable: boolean;
-            };
-            display_name: {
-                configurable: boolean;
-                value: string;
-                writable: boolean;
-            };
-            ha1: {
-                configurable: boolean;
-                value: string;
-                writable: boolean;
-            };
-            hostport_params: {
-                configurable: boolean;
-                value: string;
-                writable: boolean;
-            };
-            instance_id: {
-                configurable: boolean;
-                value: string;
-                writable: boolean;
-            };
-            jssip_id: {
-                configurable: boolean;
-                value: string;
-                writable: boolean;
-            };
-            no_answer_timeout: {
-                configurable: boolean;
-                value: string;
-                writable: boolean;
-            };
-            password: {
-                configurable: boolean;
-                value: string;
-                writable: boolean;
-            };
-            realm: {
-                configurable: boolean;
-                value: string;
-                writable: boolean;
-            };
-            register: {
-                configurable: boolean;
-                value: string;
-                writable: boolean;
-            };
-            register_expires: {
-                configurable: boolean;
-                value: string;
-                writable: boolean;
-            };
-            registrar_server: {
-                configurable: boolean;
-                value: string;
-                writable: boolean;
-            };
-            session_timers: {
-                configurable: boolean;
-                value: string;
-                writable: boolean;
-            };
-            sockets: {
-                configurable: boolean;
-                value: string;
-                writable: boolean;
-            };
-            uri: {
-                configurable: boolean;
-                value: string;
-                writable: boolean;
-            };
-            use_preloaded_route: {
-                configurable: boolean;
-                value: string;
-                writable: boolean;
-            };
-            via_core_value: {
-                configurable: boolean;
-                value: string;
-                writable: boolean;
-            };
-            via_host: {
-                configurable: boolean;
-                value: string;
-                writable: boolean;
-            };
         };
     }
 
