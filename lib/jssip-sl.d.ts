@@ -15,7 +15,7 @@ declare module 'jssip-sl' {
             realm?: string;
             register_expires?: number;
             registrar_server?: string;
-            use_preloaded_route: boolean;
+            use_preloaded_route?: boolean;
             authorization_user?: string;
             password?: string;
         });
