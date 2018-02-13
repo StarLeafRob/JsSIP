@@ -1,5 +1,6 @@
 node_modules/
-lib-es5/
+dist/
 npm-debug.log
-.npmignore
-.idea
+.gitignore
+NO_GIT/
+
