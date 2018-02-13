@@ -1,12 +1,12 @@
 /*
- * JsSIP v3.2.4
+ * JsSIP v3.2.9
  * the Javascript SIP library
  * Copyright: 2012-2018 José Luis Millán <jmillan@aliax.net> (https://github.com/jmillan)
  * Homepage: http://jssip.net
  * License: MIT
  */
 
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.JsSIP = f()}})(function(){var define,module,exports;return (function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.JsSIP = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
 var Utils = require('./Utils');
@@ -14584,9 +14584,6 @@ module.exports = function (_EventEmitter) {
 
       this._id = this._request.call_id + this._from_tag;
 
-      // Create a new RTCPeerConnection instance.
-      this._createRTCConnection(pcConfig, rtcConstraints);
-
       // Set internal properties.
       this._direction = 'outgoing';
       this._local_identity = this._request.from;
@@ -14598,6 +14595,9 @@ module.exports = function (_EventEmitter) {
       }
 
       this._newRTCSession('local', this._request);
+
+      // Create a new RTCPeerConnection instance.
+      this._createRTCConnection(pcConfig, rtcConstraints);
 
       this._sendInitialRequest(mediaConstraints, rtcOfferConstraints, mediaStream);
     }
@@ -16095,6 +16095,8 @@ module.exports = function (_EventEmitter) {
   }, {
     key: '_receiveReinvite',
     value: function _receiveReinvite(request) {
+      var _this16 = this;
+
       debug('receiveReinvite()');
 
       var contentType = request.getHeader('Content-Type');
@@ -16186,13 +16188,11 @@ module.exports = function (_EventEmitter) {
         var e = { originator: 'remote', type: 'offer', sdp: request.body };
 
         var setSdp = function setSdp() {
-          var _this16 = this;
-
           var offer = new RTCSessionDescription({ type: 'offer', sdp: e.sdp });
 
-          this._connectionPromiseQueue = this._connectionPromiseQueue.then(function () {
+          _this16._connectionPromiseQueue = _this16._connectionPromiseQueue.then(function () {
             return _this16._connection.setRemoteDescription(offer);
-          }).then(doAnswer.bind(this)).catch(function (error) {
+          }).then(doAnswer.bind(_this16)).catch(function (error) {
             request.reply(488);
 
             debugerror('emit "peerconnection:setremotedescriptionfailed" [error:%o]', error);
@@ -24760,13 +24760,6 @@ var grammar = module.exports = {
       reg: /^framerate:(\d+(?:$|\.\d+))/,
       format: 'framerate:%s'
     },
-    { // RFC4570
-      //a=source-filter: incl IN IP4 239.5.2.31 10.1.15.5
-      name: 'sourceFilter',
-      reg: /^source-filter: *(excl|incl) (\S*) (IP4|IP6|\*) (\S*) (.*)/,
-      names: ['filterMode', 'netType', 'addressTypes', 'destAddress', 'srcList'],
-      format: 'source-filter: %s %s %s %s %s'
-    },
     { // any a= that we don't understand is kepts verbatim on media.invalid
       push: 'invalid',
       names: ['value']
@@ -25045,7 +25038,7 @@ module.exports={
   "name": "jssip-sl",
   "title": "JsSIP",
   "description": "the Javascript SIP library",
-  "version": "3.2.4",
+  "version": "3.2.9",
   "homepage": "http://jssip.net",
   "author": "José Luis Millán <jmillan@aliax.net> (https://github.com/jmillan)",
   "contributors": [
