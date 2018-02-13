@@ -349,6 +349,7 @@ declare module 'jssip-sl' {
         isMuted(): { audio: boolean; video: boolean };
         unmute(opts: { audio?: boolean; video?: boolean }): void;
         mute(opts: { audio?: boolean; video?: boolean }): void;
+        sendInfo(contentType: string, body?: string, options?: {extraHeaders: string[]})
         connection: RTCPeerConnection;
     }
 
