@@ -16095,8 +16095,6 @@ module.exports = function (_EventEmitter) {
   }, {
     key: '_receiveReinvite',
     value: function _receiveReinvite(request) {
-      var _this16 = this;
-
       debug('receiveReinvite()');
 
       var contentType = request.getHeader('Content-Type');
@@ -16187,20 +16185,38 @@ module.exports = function (_EventEmitter) {
 
         var e = { originator: 'remote', type: 'offer', sdp: request.body };
 
+        var setSdp = function setSdp() {
+          var _this16 = this;
+
+          var offer = new RTCSessionDescription({ type: 'offer', sdp: e.sdp });
+
+          this._connectionPromiseQueue = this._connectionPromiseQueue.then(function () {
+            return _this16._connection.setRemoteDescription(offer);
+          }).then(doAnswer.bind(this)).catch(function (error) {
+            request.reply(488);
+
+            debugerror('emit "peerconnection:setremotedescriptionfailed" [error:%o]', error);
+
+            _this16.emit('peerconnection:setremotedescriptionfailed', error);
+          });
+        };
+
+        var await_sdp = false;
+
+        e.await_sdp = function () {
+          await_sdp = true;
+
+          return function () {
+            setSdp();
+          };
+        };
+
         debug('emit "sdp"');
         this.emit('sdp', e);
 
-        var offer = new RTCSessionDescription({ type: 'offer', sdp: e.sdp });
-
-        this._connectionPromiseQueue = this._connectionPromiseQueue.then(function () {
-          return _this16._connection.setRemoteDescription(offer);
-        }).then(doAnswer.bind(this)).catch(function (error) {
-          request.reply(488);
-
-          debugerror('emit "peerconnection:setremotedescriptionfailed" [error:%o]', error);
-
-          _this16.emit('peerconnection:setremotedescriptionfailed', error);
-        });
+        if (!await_sdp) {
+          setSdp();
+        }
       } else {
         this._late_sdp = true;
         doAnswer.call(this);
