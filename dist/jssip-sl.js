@@ -1,5 +1,5 @@
 /*
- * JsSIP v3.2.4
+ * JsSIP v3.2.6
  * the Javascript SIP library
  * Copyright: 2012-2018 José Luis Millán <jmillan@aliax.net> (https://github.com/jmillan)
  * Homepage: http://jssip.net
@@ -16095,6 +16095,8 @@ module.exports = function (_EventEmitter) {
   }, {
     key: '_receiveReinvite',
     value: function _receiveReinvite(request) {
+      var _this16 = this;
+
       debug('receiveReinvite()');
 
       var contentType = request.getHeader('Content-Type');
@@ -16186,13 +16188,11 @@ module.exports = function (_EventEmitter) {
         var e = { originator: 'remote', type: 'offer', sdp: request.body };
 
         var setSdp = function setSdp() {
-          var _this16 = this;
-
           var offer = new RTCSessionDescription({ type: 'offer', sdp: e.sdp });
 
-          this._connectionPromiseQueue = this._connectionPromiseQueue.then(function () {
+          _this16._connectionPromiseQueue = _this16._connectionPromiseQueue.then(function () {
             return _this16._connection.setRemoteDescription(offer);
-          }).then(doAnswer.bind(this)).catch(function (error) {
+          }).then(doAnswer.bind(_this16)).catch(function (error) {
             request.reply(488);
 
             debugerror('emit "peerconnection:setremotedescriptionfailed" [error:%o]', error);
@@ -25045,7 +25045,7 @@ module.exports={
   "name": "jssip-sl",
   "title": "JsSIP",
   "description": "the Javascript SIP library",
-  "version": "3.2.4",
+  "version": "3.2.6",
   "homepage": "http://jssip.net",
   "author": "José Luis Millán <jmillan@aliax.net> (https://github.com/jmillan)",
   "contributors": [
