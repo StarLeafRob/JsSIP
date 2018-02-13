@@ -1,5 +1,5 @@
 /*
- * JsSIP v3.2.10
+ * JsSIP v3.2.12
  * the Javascript SIP library
  * Copyright: 2012-2018 José Luis Millán <jmillan@aliax.net> (https://github.com/jmillan)
  * Homepage: http://jssip.net
@@ -14929,7 +14929,9 @@ module.exports = function (_EventEmitter) {
           var offer = new RTCSessionDescription({ type: 'offer', sdp: e.sdp });
 
           this._connectionPromiseQueue = this._connectionPromiseQueue.then(function () {
-            return _this4._connection.setRemoteDescription(offer);
+            return new Promise(function (resolve, reject) {
+              return _this4._connection.setRemoteDescription(offer, resolve, reject);
+            });
           }).then(remoteDescriptionSucceededOrNotNeeded.bind(this)).catch(function (error) {
             request.reply(488);
             _this4._failed('system', null, JsSIP_C.causes.WEBRTC_ERROR);
@@ -15609,7 +15611,9 @@ module.exports = function (_EventEmitter) {
               var answer = new RTCSessionDescription({ type: 'answer', sdp: e.sdp });
 
               this._connectionPromiseQueue = this._connectionPromiseQueue.then(function () {
-                return _this11._connection.setRemoteDescription(answer);
+                return new Promise(function (resolve, reject) {
+                  return _this11._connection.setRemoteDescription(answer, resolve, reject);
+                });
               }).then(function () {
                 if (!_this11._is_confirmed) {
                   _this11._confirmed('remote', request);
@@ -15944,7 +15948,9 @@ module.exports = function (_EventEmitter) {
 
       if (type === 'offer') {
         this._connectionPromiseQueue = this._connectionPromiseQueue.then(function () {
-          return connection.createOffer(constraints);
+          return new Promise(function (resolve, reject) {
+            return connection.createOffer(resolve, reject, constraints);
+          });
         }).then(createSucceeded.bind(this)).catch(function (error) {
           _this14._rtcReady = true;
           if (onFailure) {
@@ -15957,7 +15963,9 @@ module.exports = function (_EventEmitter) {
         });
       } else if (type === 'answer') {
         this._connectionPromiseQueue = this._connectionPromiseQueue.then(function () {
-          return connection.createAnswer(constraints);
+          return new Promise(function (resolve, reject) {
+            return connection.createAnswer(resolve, reject, constraints);
+          });
         }).then(createSucceeded.bind(this)).catch(function (error) {
           _this14._rtcReady = true;
           if (onFailure) {
@@ -15995,7 +16003,7 @@ module.exports = function (_EventEmitter) {
           }
         };
 
-        connection.setLocalDescription(desc).then(function () {
+        connection.setLocalDescription(desc, function () {
           if (connection.iceGatheringState === 'complete') {
             _this15._rtcReady = true;
 
@@ -16009,7 +16017,7 @@ module.exports = function (_EventEmitter) {
               onSuccess = null;
             }
           }
-        }).catch(function (error) {
+        }, function (error) {
           _this15._rtcReady = true;
           if (onFailure) {
             onFailure(error);
@@ -16189,7 +16197,9 @@ module.exports = function (_EventEmitter) {
           var offer = new RTCSessionDescription({ type: 'offer', sdp: e.sdp });
 
           _this16._connectionPromiseQueue = _this16._connectionPromiseQueue.then(function () {
-            return _this16._connection.setRemoteDescription(offer);
+            return new Promise(function (resolve_, reject_) {
+              return _this16._connection.setRemoteDescription(offer, resolve_, reject_);
+            });
           }).then(doAnswer.bind(_this16)).catch(function (error) {
             request.reply(488);
 
@@ -16378,7 +16388,9 @@ module.exports = function (_EventEmitter) {
       var offer = new RTCSessionDescription({ type: 'offer', sdp: e.sdp });
 
       this._connectionPromiseQueue = this._connectionPromiseQueue.then(function () {
-        return _this18._connection.setRemoteDescription(offer);
+        return new Promise(function (resolve_, reject_) {
+          return _this18._connection.setRemoteDescription(offer, resolve_, reject_);
+        });
       }).then(function () {
         if (_this18._remoteHold === true && hold === false) {
           _this18._remoteHold = false;
@@ -16786,7 +16798,9 @@ module.exports = function (_EventEmitter) {
             var answer = new RTCSessionDescription({ type: 'answer', sdp: e.sdp });
 
             this._connectionPromiseQueue = this._connectionPromiseQueue.then(function () {
-              return _this23._connection.setRemoteDescription(answer);
+              return new Promise(function (resolve, reject) {
+                return _this23._connection.setRemoteDescription(answer, resolve, reject);
+              });
             }).catch(function (error) {
               debugerror('emit "peerconnection:setremotedescriptionfailed" [error:%o]', error);
 
@@ -16821,8 +16835,12 @@ module.exports = function (_EventEmitter) {
               // Be ready for 200 with SDP after a 180/183 with SDP.
               // We created a SDP 'answer' for it, so check the current signaling state.
               if (_this23._connection.signalingState === 'stable') {
-                return _this23._connection.createOffer().then(function (offer) {
-                  return _this23._connection.setLocalDescription(offer);
+                return new Promise(function (resolve, reject) {
+                  return _this23._connection.createOffer(resolve, reject);
+                }).then(function (offer) {
+                  return new Promise(function (resolve, reject) {
+                    return _this23._connection.setLocalDescription(offer, resolve, reject);
+                  });
                 }).catch(function (error) {
                   _this23._acceptAndTerminate(response, 500, error.toString());
                   _this23._failed('local', response, JsSIP_C.causes.WEBRTC_ERROR);
@@ -16833,7 +16851,9 @@ module.exports = function (_EventEmitter) {
                 });
               }
             }).then(function () {
-              _this23._connection.setRemoteDescription(_answer).then(function () {
+              return new Promise(function (resolve, reject) {
+                return _this23._connection.setRemoteDescription(_answer, resolve, reject);
+              }).then(function () {
                 // Handle Session Timers.
                 _this23._handleSessionTimersInIncomingResponse(response);
 
@@ -16955,7 +16975,9 @@ module.exports = function (_EventEmitter) {
         var answer = new RTCSessionDescription({ type: 'answer', sdp: e.sdp });
 
         this._connectionPromiseQueue = this._connectionPromiseQueue.then(function () {
-          return _this25._connection.setRemoteDescription(answer);
+          return new Promise(function (resolve, reject) {
+            return _this25._connection.setRemoteDescription(answer, resolve, reject);
+          });
         }).then(function () {
           if (eventHandlers.succeeded) {
             eventHandlers.succeeded(response);
@@ -17097,7 +17119,9 @@ module.exports = function (_EventEmitter) {
           var answer = new RTCSessionDescription({ type: 'answer', sdp: e.sdp });
 
           this._connectionPromiseQueue = this._connectionPromiseQueue.then(function () {
-            return _this27._connection.setRemoteDescription(answer);
+            return new Promise(function (resolve, reject) {
+              return _this27._connection.setRemoteDescription(answer, resolve, reject);
+            });
           }).then(function () {
             if (eventHandlers.succeeded) {
               eventHandlers.succeeded(response);
@@ -25036,7 +25060,7 @@ module.exports={
   "name": "jssip-sl",
   "title": "JsSIP",
   "description": "the Javascript SIP library",
-  "version": "3.2.10",
+  "version": "3.2.12",
   "homepage": "http://jssip.net",
   "author": "José Luis Millán <jmillan@aliax.net> (https://github.com/jmillan)",
   "contributors": [
