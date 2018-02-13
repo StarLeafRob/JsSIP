@@ -1,5 +1,5 @@
 /*
- * JsSIP v3.2.9
+ * JsSIP v3.2.10
  * the Javascript SIP library
  * Copyright: 2012-2018 José Luis Millán <jmillan@aliax.net> (https://github.com/jmillan)
  * Homepage: http://jssip.net
@@ -15912,7 +15912,7 @@ module.exports = function (_EventEmitter) {
 
       this._connection = new RTCPeerConnection(pcConfig, rtcConstraints);
 
-      this._connection.addEventListener('iceconnectionstatechange', function () {
+      this._connection.oniceconnectionstatechange = function () {
         var state = _this13._connection.iceConnectionState;
 
         // TODO: Do more with different states.
@@ -15923,7 +15923,7 @@ module.exports = function (_EventEmitter) {
             reason_phrase: JsSIP_C.causes.RTP_TIMEOUT
           });
         }
-      });
+      };
 
       debug('emit "peerconnection"');
 
@@ -15976,13 +15976,11 @@ module.exports = function (_EventEmitter) {
       function createSucceeded(desc) {
         var _this15 = this;
 
-        var _listener = void 0;
-
-        connection.addEventListener('icecandidate', _listener = function listener(event) {
+        connection.onicecandidate = function (event) {
           var candidate = event.candidate;
 
           if (!candidate) {
-            connection.removeEventListener('icecandidate', _listener);
+            connection.onicecandidate = undefined;
             _this15._rtcReady = true;
 
             if (onSuccess) {
@@ -15995,7 +15993,7 @@ module.exports = function (_EventEmitter) {
             }
             onSuccess = null;
           }
-        });
+        };
 
         connection.setLocalDescription(desc).then(function () {
           if (connection.iceGatheringState === 'complete') {
@@ -25038,7 +25036,7 @@ module.exports={
   "name": "jssip-sl",
   "title": "JsSIP",
   "description": "the Javascript SIP library",
-  "version": "3.2.9",
+  "version": "3.2.10",
   "homepage": "http://jssip.net",
   "author": "José Luis Millán <jmillan@aliax.net> (https://github.com/jmillan)",
   "contributors": [
