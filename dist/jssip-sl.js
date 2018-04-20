@@ -1,5 +1,5 @@
 /*
- * JsSIP v3.2.12
+ * JsSIP v3.2.14
  * the Javascript SIP library
  * Copyright: 2012-2018 José Luis Millán <jmillan@aliax.net> (https://github.com/jmillan)
  * Homepage: http://jssip.net
@@ -15347,7 +15347,7 @@ module.exports = function (_EventEmitter) {
         return false;
       }
 
-      if (!this._isReadyToReOffer()) {
+      if (!this.isReadyToReOffer()) {
         return false;
       }
 
@@ -15402,7 +15402,7 @@ module.exports = function (_EventEmitter) {
         return false;
       }
 
-      if (!this._isReadyToReOffer()) {
+      if (!this.isReadyToReOffer()) {
         return false;
       }
 
@@ -15455,7 +15455,7 @@ module.exports = function (_EventEmitter) {
         return false;
       }
 
-      if (!this._isReadyToReOffer()) {
+      if (!this.isReadyToReOffer()) {
         return false;
       }
 
@@ -15766,24 +15766,24 @@ module.exports = function (_EventEmitter) {
      */
 
   }, {
-    key: '_isReadyToReOffer',
-    value: function _isReadyToReOffer() {
+    key: 'isReadyToReOffer',
+    value: function isReadyToReOffer() {
       if (!this._rtcReady) {
-        debug('_isReadyToReOffer() | internal WebRTC status not ready');
+        debug('isReadyToReOffer() | internal WebRTC status not ready');
 
         return false;
       }
 
       // No established yet.
       if (!this._dialog) {
-        debug('_isReadyToReOffer() | session not established yet');
+        debug('isReadyToReOffer() | session not established yet');
 
         return false;
       }
 
       // Another INVITE transaction is in progress.
       if (this._dialog.uac_pending_reply === true || this._dialog.uas_pending_reply === true) {
-        debug('_isReadyToReOffer() | there is another INVITE/UPDATE transaction in progress');
+        debug('isReadyToReOffer() | there is another INVITE/UPDATE transaction in progress');
 
         return false;
       }
@@ -25060,7 +25060,7 @@ module.exports={
   "name": "jssip-sl",
   "title": "JsSIP",
   "description": "the Javascript SIP library",
-  "version": "3.2.12",
+  "version": "3.2.14",
   "homepage": "http://jssip.net",
   "author": "José Luis Millán <jmillan@aliax.net> (https://github.com/jmillan)",
   "contributors": [
